@@ -32,19 +32,20 @@ import java.util.List;
  */
 
 public class CameraHelper {
-    private TextureView targetView;
-    private Surface targetSurface;
+    public TextureView targetView;
+    public Surface targetSurface;
 
     private String cameraId;
     private CameraManager cameraManager;
     private CameraDevice cameraDevice;
 
-    private Activity parentActivity;
+    public Activity parentActivity;
 
     public CameraHelper(Activity parentActivity, TextureView targetView) {
         this.parentActivity = parentActivity;
         this.targetView = targetView;
 
+        cameraThreadHandler = new CameraThreadHandler(this);
         cameraManager = (CameraManager) parentActivity.getSystemService(Context.CAMERA_SERVICE);
 
         try {
@@ -77,6 +78,13 @@ public class CameraHelper {
      */
     public void setCaptureProcessor(ICaptureProcessor processor) {
         captureProcessor = processor;
+    }
+
+    /**
+     * returns capture processor
+     */
+    public ICaptureProcessor getCaptureProcessor() {
+        return captureProcessor;
     }
 
     /**
@@ -209,6 +217,12 @@ public class CameraHelper {
         }
     }
 
+    private boolean isThreadingEnabled = false;
+    public void setThreadingEnabled(boolean isEnabled) {
+        isThreadingEnabled = isEnabled;
+    }
+
+    private CameraThreadHandler cameraThreadHandler;
     /* contains captured bitmap */
     private Bitmap captureBitmap;
     /* updates captured bitmap and calls capture processor */
@@ -220,7 +234,12 @@ public class CameraHelper {
         captureBitmap = Bitmap.createScaledBitmap(targetView.getBitmap(captureBitmap), captureW, captureH, false);
 
         if (captureProcessor != null) {
-            captureProcessor.process(captureBitmap, targetView, parentActivity);
+            if (isThreadingEnabled) {
+                cameraThreadHandler.Queue(captureBitmap);
+            }
+            else {
+                captureProcessor.process(captureBitmap, targetView, parentActivity);
+            }
         }
     }
 }

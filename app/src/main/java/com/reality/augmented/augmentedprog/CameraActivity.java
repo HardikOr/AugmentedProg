@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.ImageFormat;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.*;
@@ -26,6 +27,7 @@ import java.nio.ByteBuffer;
 import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.RunnableFuture;
 
 /**
  * Created by user on 6/2/17.
@@ -35,6 +37,11 @@ public class CameraActivity extends Activity {
     ImageView imgView;
     TextureView texView;
 
+    int threadsRunning = 0;
+
+    CameraActivity current;
+
+    Bitmap bmp;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,13 +53,28 @@ public class CameraActivity extends Activity {
         CameraHelper cameraHelper = new CameraHelper(this, texView);
 
         cameraHelper.setCaptureProcessor(new ICaptureProcessor() {
+
+
             @Override
-            public void process(Bitmap bmp, TextureView view, Activity parentActivity) {
-                imgView.setImageBitmap(bmp);
+            public void process(final Bitmap bmp, TextureView view, Activity parentActivity) {
+                int w = bmp.getWidth(), h = bmp.getHeight();
+                int[] colors = new int[w * h];
+                bmp.getPixels(colors, 0, w, 0, 0, w, h);
+
+                MainActivity.nativeTest(colors, w, h);
+
+                bmp.setPixels(colors, 0, w, 0, 0, w, h);
+
+                parentActivity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        imgView.setImageBitmap(bmp);
+                    }
+                });
             }
         });
 
-        cameraHelper.setTargetResolution(100, 200);
+        cameraHelper.setTargetResolution(300, 300);
         cameraHelper.startCameraProcessing();
     }
 

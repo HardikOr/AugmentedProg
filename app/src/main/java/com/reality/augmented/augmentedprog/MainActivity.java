@@ -23,8 +23,13 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(current, CameraActivity.class);
                 startActivity(intent);
-
             }
         });
     }
+
+    static {
+        System.loadLibrary("native-lib");
+    }
+
+    public static native void nativeTest(int[] pixels, int w, int h);
 }
