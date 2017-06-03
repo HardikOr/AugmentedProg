@@ -31,5 +31,5 @@ public class MainActivity extends AppCompatActivity {
         System.loadLibrary("native-lib");
     }
 
-    public static native void nativeTest(int[] pixels, int w, int h);
+    public static native void nativeCaptureProcessor(int[] pixels, int w, int h);
 }

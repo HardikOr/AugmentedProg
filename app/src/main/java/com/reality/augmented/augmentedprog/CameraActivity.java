@@ -52,27 +52,7 @@ public class CameraActivity extends Activity {
 
         CameraHelper cameraHelper = new CameraHelper(this, texView);
 
-        cameraHelper.setCaptureProcessor(new ICaptureProcessor() {
-
-
-            @Override
-            public void process(final Bitmap bmp, TextureView view, Activity parentActivity) {
-                int w = bmp.getWidth(), h = bmp.getHeight();
-                int[] colors = new int[w * h];
-                bmp.getPixels(colors, 0, w, 0, 0, w, h);
-
-                MainActivity.nativeTest(colors, w, h);
-
-                bmp.setPixels(colors, 0, w, 0, 0, w, h);
-
-                parentActivity.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        imgView.setImageBitmap(bmp);
-                    }
-                });
-            }
-        });
+        cameraHelper.setCaptureProcessor(new NativeCaptureProcessor(imgView));
 
         cameraHelper.setTargetResolution(300, 300);
         cameraHelper.startCameraProcessing();

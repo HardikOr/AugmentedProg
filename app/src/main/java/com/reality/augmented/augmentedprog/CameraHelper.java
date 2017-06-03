@@ -218,6 +218,7 @@ public class CameraHelper {
     }
 
     private boolean isThreadingEnabled = false;
+    private boolean skipNextFrame = false;
     public void setThreadingEnabled(boolean isEnabled) {
         isThreadingEnabled = isEnabled;
     }
@@ -240,6 +241,17 @@ public class CameraHelper {
             else {
                 captureProcessor.process(captureBitmap, targetView, parentActivity);
             }
+            /*
+            else if (!skipNextFrame){
+                long time = System.currentTimeMillis();
+                captureProcessor.process(captureBitmap, targetView, parentActivity);
+                time = System.currentTimeMillis() - time;
+                if (time > 0.035)
+                    skipNextFrame = true;
+            }
+            else {
+                skipNextFrame = false;
+            }*/
         }
     }
 }
