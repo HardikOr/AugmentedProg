@@ -14,7 +14,7 @@ double colorDiff(int color1, int color2);
 int colorVal(int color);
 
 bool corner_detector_trajkovic(jint* pixels, int w, int h, int x, int y, int t);
-bool corner_detector_fast(jint *pixels, int w, int h, int x, int y, int N, int t);
+int corner_detector_fast(jint *pixels, int w, int h, int x, int y, int N, int t);
 
 
 #endif //AUGMENTEDPROG_NATIVE_LIB_H_H
