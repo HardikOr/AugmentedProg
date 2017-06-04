@@ -52,7 +52,7 @@ public class CameraActivity extends Activity {
 
         CameraHelper cameraHelper = new CameraHelper(this, texView);
 
-        cameraHelper.setCaptureProcessor(new NativeCaptureProcessor(imgView));
+        cameraHelper.setCaptureProcessor(new NativeCaptureProcessor(imgView, 2));
 
         cameraHelper.setTargetResolution(300, 300);
         cameraHelper.startCameraProcessing();
